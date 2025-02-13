@@ -2,11 +2,13 @@ import React,{useContext, useState} from 'react'
 import './registercss.css'
 import contextMenu from '../context/ContextSnip'
 import { useNavigate } from 'react-router-dom'
+import { links } from './links'
 export default function RegisterUser() {
   const [User, setUser] = useState({name:"",email:"",password:""})
   const globalState=useContext(contextMenu)
   const navigate=useNavigate()
   const [msg, setmsg] = useState("")
+  const [loading, setloading] = useState(false)
   const HandleChange=(e)=>{
     let value;
     if(e.target.type==="email"){
@@ -21,7 +23,8 @@ export default function RegisterUser() {
     setUser({...User,...value})
   }
   const RegisterUser= async()=>{
-    const url="http://localhost:5000/api/auth/createUser"
+    setloading(true)
+    const url=links.register
     const options={
       method:"POST",
       headers:{
@@ -61,7 +64,9 @@ export default function RegisterUser() {
         setmsg(Message)
     }
     setTimeout(()=>{setmsg("")},2000)
+    
   }
+  setloading(false)
 }
   return (
     <div className='RegisterArea'> 
@@ -82,7 +87,9 @@ export default function RegisterUser() {
             </div>
             <div className="submit-panel" style={{justifyContent:"flex-end"}}>
                 
-                <button onClick={RegisterUser}>Register</button>
+                {!loading&&<button onClick={RegisterUser}>Register</button>}
+               
+                {loading&&<div className="loader"></div>}
             </div>
             
         </div>

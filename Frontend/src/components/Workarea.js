@@ -3,6 +3,7 @@ import "./workarea.css";
 import contextMenu from "../context/ContextSnip";
 import {useNavigate } from "react-router-dom";
 import Titlenote from "./Titlenote";
+import { links } from "./links";
 // import Alert from "./Alert";
 export default function Workarea() {
   const globalstate = useContext(contextMenu);
@@ -12,6 +13,7 @@ export default function Workarea() {
   const [operation,setOperation]=useState("")
   
   const fetchData=async()=>{
+    setOperation("Fetching...")
     let token=localStorage.getItem("token")
     const options={
       method:'GET',
@@ -19,11 +21,11 @@ export default function Workarea() {
         'auth-token':token
       }
     }
-    let result=await fetch('http://localhost:5000/api/notes/getNotes',options)
+    let result=await fetch(links.AllNotes,options)
     let jsonResult=await result.json()
     if(jsonResult.Success===1){
       globalstate.update({notes:jsonResult.Notes})
-
+      setOperation("")
     }
     else{
       setOperation('Fetching: Unsuccessful')
@@ -67,6 +69,7 @@ export default function Workarea() {
     }
   }
   const DoOperation=async(url,Method,header,ShouldBody,process_name,SentBody={})=>{
+    setOperation("Operation in Progress...")
     const options={
       method:Method,
       headers:header,
@@ -92,7 +95,7 @@ export default function Workarea() {
     setClicked(-1)
   }
   const Save=async()=>{
-    const url="http://localhost:5000/api/notes/addnote"
+    const url=links.AddNotes
     const header={
       "auth-token":localStorage.getItem("token"),
       "Content-Type":"application/json"
@@ -104,7 +107,7 @@ export default function Workarea() {
   //Update
   const Update=async()=>{
     const id=globalstate.state.notes[Clicked]._id
-    const url="http://localhost:5000/api/notes/updatenote/"+id
+    const url=links.updateNote+`/${id}`
     
     const header={
       'auth-token':localStorage.getItem("token"),
@@ -121,7 +124,7 @@ export default function Workarea() {
       },1000)
       return;
     }
-    const url="http://localhost:5000/api/notes/deleteAll"
+    const url=links.deleteAll
     const header={
       'auth-token':localStorage.getItem('token')
     }

@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import "./titleNote.css";
 import contextMenu from "../context/ContextSnip";
+import { links } from "./links";
 
 export default function Titlenote(props) {
   const { title, date, pos, changeClicked, tag,id } = props;
@@ -15,7 +16,7 @@ export default function Titlenote(props) {
     changeClicked(pos);
   };
   const deleteNote=async()=>{
-    const url="http://localhost:5000/api/notes/deletenote/"+id
+    const url=links.deleteNote+`/${id}`
     let Token=localStorage.getItem("token")
     const options={
       method:'DELETE',
